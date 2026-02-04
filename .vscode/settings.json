@@ -1,0 +1,12 @@
+{
+  "editor.defaultFormatter": "Dart-Code.dart-code",
+  "editor.formatOnSave": false,
+  "files.autoSave": "afterDelay",
+  "editor.allowVariableFontsInAccessibilityMode": true,
+  "editor.formatOnType": true,
+  "editor.rulers": [],
+  "[dart]": {
+    "editor.rulers": []
+  },
+   "dart.lineLength": 100
+}

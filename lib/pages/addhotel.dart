@@ -15,80 +15,72 @@ class Addhotel extends StatefulWidget {
 }
 
 class _AddhotelState extends State<Addhotel> {
+  final TextEditingController hotelCtrl = TextEditingController();
+  final TextEditingController priceCtrl = TextEditingController();
+  final TextEditingController descCtrl = TextEditingController();
+  final TextEditingController latitudeCtrl = TextEditingController();
+  final TextEditingController longitudeCtrl = TextEditingController();
 
-final TextEditingController hotelCtrl =TextEditingController();
-final TextEditingController priceCtrl =TextEditingController();
-final TextEditingController descCtrl =TextEditingController();
-final TextEditingController latitudeCtrl =TextEditingController();
-final TextEditingController longitudeCtrl =TextEditingController();
-
- List<String> imageList = [];
-
+  List<String> imageList = [];
 
   XFile? selimage;
   XFile? selimage2;
-  final ImagePicker _picker =ImagePicker();
+  final ImagePicker _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Add Hotel"),
-      ),
+      appBar: AppBar(title: Text("Add Hotel")),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Place Name
-            const Text("Hotel Name",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const Text("Hotel Name", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 5),
             TextFormField(
-               controller: hotelCtrl,
+              controller: hotelCtrl,
               decoration: InputDecoration(
                 hintText: "Enter Hotel name",
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
 
             const SizedBox(height: 20),
 
             // Price
-            const Text("Price Per Day",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const Text(
+              "Price Per Day",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 5),
             TextFormField(
               controller: priceCtrl,
               decoration: InputDecoration(
                 hintText: "Enter price",
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
 
             const SizedBox(height: 20),
 
             // Description
-            const Text("Description",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const Text("Description", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 5),
             TextFormField(
               controller: descCtrl,
               maxLines: 3,
               decoration: InputDecoration(
                 hintText: "Enter description",
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
 
             const SizedBox(height: 20),
 
             // Location
-            const Text("Location",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text("Location", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
 
             Row(
@@ -97,16 +89,16 @@ final TextEditingController longitudeCtrl =TextEditingController();
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("Latitude",
-                          style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.bold)),
+                      const Text(
+                        "Latitude",
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
                       const SizedBox(height: 5),
                       TextFormField(
                         controller: latitudeCtrl,
                         decoration: InputDecoration(
                           hintText: "Latitude",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12)),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                       ),
                     ],
@@ -117,16 +109,16 @@ final TextEditingController longitudeCtrl =TextEditingController();
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("Longitude",
-                          style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.bold)),
+                      const Text(
+                        "Longitude",
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
                       const SizedBox(height: 5),
                       TextFormField(
                         controller: longitudeCtrl,
                         decoration: InputDecoration(
                           hintText: "Longitude",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12)),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                       ),
                     ],
@@ -138,28 +130,30 @@ final TextEditingController longitudeCtrl =TextEditingController();
             const SizedBox(height: 25),
 
             // Images
-         const Text("Hotel Images (2)",
-    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-const SizedBox(height: 10),
+            const Text(
+              "Hotel Images (2)",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
 
-Row(
+            Row(
               children: [
-                _imageBox(()async{
-                   final XFile? picked = await _picker.pickImage(source: ImageSource.gallery);
-    if (picked !=null){
-      setState(() {
-        selimage = XFile(picked.path);
-      });
-    } 
+                _imageBox(() async {
+                  final XFile? picked = await _picker.pickImage(source: ImageSource.gallery);
+                  if (picked != null) {
+                    setState(() {
+                      selimage = XFile(picked.path);
+                    });
+                  }
                 }, selimage),
-                _imageBox(()async{
-                   final XFile? picked = await _picker.pickImage(source: ImageSource.gallery);
-    if (picked !=null){
-      setState(() {
-        selimage2 = XFile(picked.path);
-      });
-    } 
-                },selimage2),
+                _imageBox(() async {
+                  final XFile? picked = await _picker.pickImage(source: ImageSource.gallery);
+                  if (picked != null) {
+                    setState(() {
+                      selimage2 = XFile(picked.path);
+                    });
+                  }
+                }, selimage2),
               ],
             ),
 
@@ -168,47 +162,50 @@ Row(
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () async{
+                onPressed: () async {
+                  double? price = double.tryParse(priceCtrl.text);
 
                   var uuid = Uuid();
-                  String? imageurl;
-                  String?imageUrl2;
+                  var id = uuid.v4();
 
-                  if( selimage!= null && selimage2!=null){
+                  String? imageurl;
+                  String? imageUrl2;
+
+                  if (selimage != null && selimage2 != null) {
                     imageurl = await CloudneryUploader().uploadFile(selimage!);
                     imageUrl2 = await CloudneryUploader().uploadFile(selimage2!);
                   }
 
                   try {
-                         await FirebaseFirestore.instance
-                   .collection('Hotels')
-                   .doc(uuid.v4())
-                   .set({
-                    "id":uuid.v4(),
-                    "hotel":hotelCtrl.text,
-                    "price perday":priceCtrl.text,
-                    "description":descCtrl.text,
-                    "latitude":latitudeCtrl.text,
-                    "longitude":longitudeCtrl.text,
-                    "image1":imageurl,
-                    "image2":imageUrl2,
+                    await FirebaseFirestore.instance.collection('Hotels').doc((id)).set({
+                      "id": id,
+                      "hotel": hotelCtrl.text,
+                      "price perday": priceCtrl.text,
+                      "description": descCtrl.text,
+                      "latitude": latitudeCtrl.text,
+                      "longitude": longitudeCtrl.text,
+                      "image1": imageurl,
+                      "image2": imageUrl2,   
+                      if(price! <= 400.0)
+                        "filter":"lowest",
+                      
+                      if((price! >=400.0) && (price! <=700.0) )
+                      "filter":"middle",
 
-                   });
-                      Navigator.pop(context);
-
-                  }catch(e) {
+                     if(price! >= 700.0)
+                      "filter":"highest"
+                    });
+                    Navigator.pop(context);
+                  } catch (e) {
                     log(e.toString());
                   }
-
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: const Color.fromARGB(255, 67, 77, 143),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 ),
-                child: const Text("Submit", style: TextStyle(fontSize: 18,color: Colors.white)),
+                child: const Text("Submit", style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
             ),
           ],
@@ -218,7 +215,7 @@ Row(
   }
 
   // ---------------- IMAGE BOX WIDGET -------------------
- Widget _imageBox(Function()? onTap,XFile? file) {
+  Widget _imageBox(Function()? onTap, XFile? file) {
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
@@ -230,22 +227,19 @@ Row(
             border: Border.all(color: Colors.grey.shade400),
             color: Colors.grey.shade200,
           ),
-          child: file ==null    
-          ? Icon(Icons.add_a_photo, size: 40, color: Colors.black54)
-          :ClipRRect(
-            borderRadius: BorderRadius.circular(14),
-            child: Image.file(
-              File(file.path),
-              fit:BoxFit.cover,
-              width:double.infinity,
-              height: double.infinity
-            ),
-          )
-        
+          child: file == null
+              ? Icon(Icons.add_a_photo, size: 40, color: Colors.black54)
+              : ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: Image.file(
+                    File(file.path),
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
+                ),
         ),
       ),
     );
   }
-
-  }
-
+}

@@ -44,14 +44,14 @@ class _SplashPageState extends State<SplashPage>
         if (!mounted) return;
         
         if (uid != null && uid.isNotEmpty) {
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (_) => const BottomNavBar()),
+            MaterialPageRoute(builder: (_) => const BottomNavBar()),(route) => false,
           );
         } else {
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (_) => const Login()),
+            MaterialPageRoute(builder: (_) => const Login()),(route) => false,
           );
         }
       } catch (e) {

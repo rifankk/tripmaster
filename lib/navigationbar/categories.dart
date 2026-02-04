@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import 'addcategory_screen.dart';
 
 
@@ -11,7 +10,8 @@ class Categories extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-    
+    title:Center(child: Text("Placelist",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
+    backgroundColor: Colors.indigo,
       ),
 
       floatingActionButton: FloatingActionButton(
@@ -34,7 +34,7 @@ class Categories extends StatelessWidget {
               return   Padding(
                 padding: const EdgeInsets.only(bottom:  8.0),
                 child: _categoryCard(
-                  imageUrl: asyncSnapshot.data?.docs[index]['image']??'N/A' '"https://www.bharatbooking.com/admin/webroot/img/uploads/holiday-package/1692431062_85552-thj.jpg"',
+                  imageUrl: asyncSnapshot.data?.docs[index]['image']?? "https://www.bharatbooking.com/admin/webroot/img/uploads/holiday-package/1692431062_85552-thj.jpg",
                   title: asyncSnapshot.data?.docs[index]['place'],
                 ),
               );

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'auth/auth.dart';
 
-
-
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -16,9 +14,6 @@ class _loginstate extends State<Login> {
 
   final TextEditingController _adminEmailController = TextEditingController();
   final TextEditingController _adminPasswordController = TextEditingController();
-  
-
-     
 
   @override
   Widget build(BuildContext context) {
@@ -59,10 +54,7 @@ class _loginstate extends State<Login> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(top: 130),
-                          child: Icon(
-                            Icons.connecting_airports_outlined,
-                            size: 90,
-                          ),
+                          child: Icon(Icons.connecting_airports_outlined, size: 90),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 82),
@@ -94,7 +86,6 @@ class _loginstate extends State<Login> {
                           child: TextFormField(
                             controller: _adminEmailController,
                             decoration: InputDecoration(
-                              
                               prefixIcon: Icon(Icons.mail),
                               hintText: "User email",
                             ),
@@ -103,9 +94,7 @@ class _loginstate extends State<Login> {
                                 return "Please enter your email";
                               }
                               // ✅ Email pattern validation
-                              final emailRegex = RegExp(
-                                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                              );
+                              final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                               if (!emailRegex.hasMatch(value)) {
                                 return "Enter a valid email address";
                               }
@@ -117,7 +106,7 @@ class _loginstate extends State<Login> {
                         Padding(
                           padding: const EdgeInsets.only(left: 15, right: 15),
                           child: TextFormField(
-                            controller:_adminPasswordController,
+                            controller: _adminPasswordController,
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.lock),
                               hintText: "Password",
@@ -134,18 +123,14 @@ class _loginstate extends State<Login> {
                         ),
                         SizedBox(height: 100),
                         GestureDetector(
-                          onTap: () async{
-
+                          onTap: () async {
                             if (_adminFormKey.currentState!.validate()) {
                               await Authservice().login(
                                 context: context,
                                 email: _adminEmailController.text,
                                 password: _adminPasswordController.text,
                               );
-                             
-                              
                             }
-                            
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -158,15 +143,11 @@ class _loginstate extends State<Login> {
                             child: Center(
                               child: Text(
                                 "Login",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                               ),
                             ),
                           ),
                         ),
-                       
                       ],
                     ),
                   ),

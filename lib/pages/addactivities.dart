@@ -12,10 +12,9 @@ class Addactivities extends StatefulWidget {
 }
 
 class _AddactivitiesState extends State<Addactivities> {
-
-  final TextEditingController titleCtrl =TextEditingController();
-  final TextEditingController priceCtrl =TextEditingController();
-  final TextEditingController descCtrl =TextEditingController();
+  final TextEditingController titleCtrl = TextEditingController();
+  final TextEditingController priceCtrl = TextEditingController();
+  final TextEditingController descCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +26,8 @@ class _AddactivitiesState extends State<Addactivities> {
           crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
-
-             Text("Title ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-             SizedBox(height: 5),
+            Text("Title ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            SizedBox(height: 5),
             TextFormField(
               controller: titleCtrl,
               decoration: InputDecoration(
@@ -37,9 +35,9 @@ class _AddactivitiesState extends State<Addactivities> {
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
-            SizedBox(height: 20,),
-             Text(" Price", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-             SizedBox(height: 5),
+            SizedBox(height: 20),
+            Text(" Price", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            SizedBox(height: 5),
             TextFormField(
               controller: priceCtrl,
               decoration: InputDecoration(
@@ -47,57 +45,47 @@ class _AddactivitiesState extends State<Addactivities> {
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
-            SizedBox(height: 20,),
+            SizedBox(height: 20),
             const Text("Description", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 5),
             TextFormField(
-            controller: descCtrl,
+              controller: descCtrl,
               maxLines: 4,
               decoration: InputDecoration(
                 hintText: "Enter description",
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
-            SizedBox(height: 25,),
-              SizedBox(
+            SizedBox(height: 25),
+            SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
-
-                  var uuid =Uuid();
-
+                  var uuid = Uuid();
+                  var id = uuid.v4();
                   try {
-                         await FirebaseFirestore.instance
-                  .collection('Activities')
-                  .doc(uuid.v4())
-                  .set({
-                    "id":uuid.v4(),
-                    "title":titleCtrl.text,
-                    "price":priceCtrl.text,
-                    "description":descCtrl.text,
-
-                  });
-                     Navigator.pop(context);
-
+                    await FirebaseFirestore.instance.collection('Activities').doc(id).set({
+                      "id": id,
+                      "title": titleCtrl.text,
+                      "price": priceCtrl.text,
+                      "description": descCtrl.text,
+                    });
+                    Navigator.pop(context);
                   } catch (e) {
-                    
                     log(e.toString());
-                 
                   }
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: const Color.fromARGB(255, 111, 119, 168),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 ),
                 child: const Text("Submit", style: TextStyle(fontSize: 18)),
               ),
             ),
-            ]
-            ),
-            ),
+          ],
+        ),
+      ),
     );
   }
 }

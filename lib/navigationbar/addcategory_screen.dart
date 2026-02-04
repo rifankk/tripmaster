@@ -30,9 +30,6 @@ class _AddCategoryPageState extends State<AddmainplaceScreen> {
     }
   }
 
- 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,44 +42,31 @@ class _AddCategoryPageState extends State<AddmainplaceScreen> {
 
           children: [
             // ---------- Place  ----------
-            Text(
-              "Place",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+            Text("Place", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             SizedBox(height: 5),
             TextField(
               controller: placeCtrl,
               decoration: InputDecoration(
                 hintText: "Enter place ",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
 
             SizedBox(height: 20),
 
-            Text(
-              "Location",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+            Text("Location", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             SizedBox(height: 5),
             TextField(
               controller: descCtrl,
               maxLines: 4,
               decoration: InputDecoration(
                 hintText: "Enter Location",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
             SizedBox(height: 20),
 
-            Text(
-              "Add  Picture",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+            Text("Add  Picture", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
 
             Row(children: [_imageBox()]),
@@ -93,36 +77,30 @@ class _AddCategoryPageState extends State<AddmainplaceScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
-
                   var uuid = Uuid();
+                  var id = uuid.v4();
                   String? imageurl;
 
                   if (image != null) {
                     imageurl = await CloudneryUploader().uploadFile(image!);
                   }
                   try {
-                                      await FirebaseFirestore.instance
-                      .collection('MainPlace')
-                      .doc(uuid.v4())
-                      .set({
-                        "id": uuid.v4(),
-                        "place": placeCtrl.text,
-                        "image": imageurl,
-                        "description": descCtrl.text,
-                      });
+                    await FirebaseFirestore.instance.collection('MainPlace').doc(id).set({
+                      "id":id,
+                      "place": placeCtrl.text,
+                      "image": imageurl,
+                      "description": descCtrl.text,
+                    });
 
-                      Navigator.pop(context);
+                    Navigator.pop(context);
                   } catch (e) {
                     log(e.toString());
                   }
-
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: const Color.fromARGB(255, 111, 119, 168),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 ),
                 child: const Text("Add", style: TextStyle(fontSize: 18)),
               ),

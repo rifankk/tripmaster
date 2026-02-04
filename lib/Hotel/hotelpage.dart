@@ -78,7 +78,7 @@ class _HotelpageState extends State<Hotelpage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              place.hotel,
+                              place.hotel!,
                               style: const TextStyle(
                                   fontSize: 17, fontWeight: FontWeight.w600),
                             ),

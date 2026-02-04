@@ -1,9 +1,10 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tripmaster/model/activitiesmodel.dart';
 
 import '../pages/addactivities.dart';
-
 
 class Activitiespage extends StatefulWidget {
   const Activitiespage({super.key});
@@ -14,7 +15,8 @@ class Activitiespage extends StatefulWidget {
 
 class _ActivitiespageState extends State<Activitiespage> {
   // Store selected activity IDs
-  Set<String> selectedActivities = {};
+  List<Activitiesmodel> selectedActivities = [];
+  List<String> selectactivityids = [];
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +24,7 @@ class _ActivitiespageState extends State<Activitiespage> {
       backgroundColor: Colors.grey[100],
       appBar: AppBar(),
       body: StreamBuilder<QuerySnapshot>(
-        stream:
-            FirebaseFirestore.instance.collection('Activities').snapshots(),
+        stream: FirebaseFirestore.instance.collection('Activities').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -34,16 +35,17 @@ class _ActivitiespageState extends State<Activitiespage> {
               child: Text(
                 'No activities yet',
                 style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w500),
+                  fontSize: 18,
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             );
           }
 
           final activities = snapshot.data!.docs
-      .map((doc)=>Activitiesmodel.fromJson(doc.data()as Map<String,dynamic>))
-      .toList();
+              .map((doc) => Activitiesmodel.fromJson(doc.data() as Map<String, dynamic>))
+              .toList();
 
           return ListView.builder(
             padding: const EdgeInsets.all(16),
@@ -57,10 +59,7 @@ class _ActivitiespageState extends State<Activitiespage> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   gradient: LinearGradient(
-                    colors: [
-                      Colors.white,
-                      Colors.blue[50]!,
-                    ],
+                    colors: [Colors.white, Colors.blue[50]!],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -84,20 +83,13 @@ class _ActivitiespageState extends State<Activitiespage> {
                           height: 70,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [
-                                Colors.blue[400]!,
-                                Colors.blue[600]!,
-                              ],
+                              colors: [Colors.blue[400]!, Colors.blue[600]!],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
                             borderRadius: BorderRadius.circular(16),
                           ),
-                          child: const Icon(
-                            Icons.local_activity,
-                            color: Colors.white,
-                            size: 32,
-                          ),
+                          child: const Icon(Icons.local_activity, color: Colors.white, size: 32),
                         ),
                         const SizedBox(width: 16),
 
@@ -119,20 +111,15 @@ class _ActivitiespageState extends State<Activitiespage> {
                                 activity.description,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey[600],
-                                ),
+                                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                               ),
                               const SizedBox(height: 10),
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 6),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                 decoration: BoxDecoration(
                                   color: Colors.green[50],
                                   borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                      color: Colors.green[200]!, width: 1),
+                                  border: Border.all(color: Colors.green[200]!, width: 1),
                                 ),
                                 child: Text(
                                   "₹${activity.price}",
@@ -148,19 +135,26 @@ class _ActivitiespageState extends State<Activitiespage> {
                         ),
 
                         // Right Checkbox
+                        // Replace the Checkbox widget with this corrected version:
                         Checkbox(
-                          value: selectedActivities.contains(activityId),
+                          value: selectactivityids.contains(activity.id),
                           onChanged: (value) {
                             setState(() {
                               if (value == true) {
-                                selectedActivities.add(activityId);
+                                selectactivityids.add(activity.id);
                               } else {
-                                selectedActivities.remove(activityId);
+                                selectactivityids.remove(activity.id);
                               }
-
-                              selectedActivities.clear();
-                              
                             });
+
+                            selectedActivities.clear();
+                            
+                            for (var i = 0; i < activities.length; i++) {
+                              if (selectactivityids.contains(activities[i].id)) {
+                                selectedActivities.add(activities[i]);
+                              }
+                            }
+                            setState(() {});
                           },
                         ),
                       ],
@@ -179,32 +173,22 @@ class _ActivitiespageState extends State<Activitiespage> {
         child: ElevatedButton(
           onPressed: () async {
             if (selectedActivities.isEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text("Please select at least one activity")));
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text("Please select at least one activity")));
               return;
             }
 
-            // Save to Firestore
-            await FirebaseFirestore.instance
-                .collection("SelectedActivities")
-                .add({
-              "selectedActivityIds": selectedActivities.toList(),
-              "created_at": Timestamp.now(),
-            });
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text("Activities Saved Successfully!")));
 
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("Activities Saved Successfully!")));
-
-            Navigator.pop(context);
+            Navigator.pop(context, selectedActivities);
           },
-          child: const Text(
-            "Submit",
-            style: TextStyle(fontSize: 18),
-          ),
+          child: const Text("Submit", style: TextStyle(fontSize: 18)),
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
       ),
@@ -212,10 +196,7 @@ class _ActivitiespageState extends State<Activitiespage> {
       // Add Button
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Addactivities()),
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (context) => Addactivities()));
         },
         backgroundColor: const Color.fromARGB(255, 226, 214, 222),
         icon: const Icon(Icons.add),

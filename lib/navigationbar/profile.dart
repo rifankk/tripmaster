@@ -9,7 +9,10 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     appBar: AppBar(),
+     appBar: AppBar(
+      title: Center(child: Text("Profile",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
+      backgroundColor: Colors.indigo,
+     ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(

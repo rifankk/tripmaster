@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:tripmaster/model/mealsmodel.dart';
 
 import '../pages/addmeals.dart';
-
 
 class Meals extends StatefulWidget {
   const Meals({super.key});
@@ -13,7 +13,8 @@ class Meals extends StatefulWidget {
 
 class _MealsState extends State<Meals> {
   // Store selected meal IDs
-  Set<String> selectedMeals = {};
+  List<mealsmodel> selectedMeals = [];
+  List<String> selectedMealsids = [];
 
   IconData _getFoodIcon(String title) {
     final lowerTitle = title.toLowerCase();
@@ -54,17 +55,33 @@ class _MealsState extends State<Meals> {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('Meals').snapshots(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+          
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final meals = snapshot.data!.docs;
+          if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
+            return Center(
+              child: Text(
+                'No meals yet',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            );
+          }
+
+          final Meals = snapshot.data!.docs
+              .map((doc) => mealsmodel.fromJson(doc.data() as Map<String, dynamic>))
+              .toList();
 
           return ListView.builder(
             padding: const EdgeInsets.all(16),
-            itemCount: meals.length,
+            itemCount: Meals.length,
             itemBuilder: (context, index) {
-              final meal = meals[index];
+              final meal = Meals[index];
               final gradientColors = _getGradientColors(index);
               final mealId = meal.id;
 
@@ -81,9 +98,7 @@ class _MealsState extends State<Meals> {
                   ],
                 ),
                 child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   elevation: 0,
                   child: Row(
                     children: [
@@ -102,11 +117,7 @@ class _MealsState extends State<Meals> {
                             bottomLeft: Radius.circular(20),
                           ),
                         ),
-                        child: Icon(
-                          _getFoodIcon(meal["title"]),
-                          size: 50,
-                          color: Colors.white,
-                        ),
+                        child: Icon(_getFoodIcon("₹${meal.title}"), size: 50, color: Colors.white),
                       ),
 
                       // CENTER TEXT
@@ -117,22 +128,19 @@ class _MealsState extends State<Meals> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                meal["title"],
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                meal.title,
+                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                meal["items"],
+                                meal.items,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(color: Colors.grey),
                               ),
                               const SizedBox(height: 10),
                               Text(
-                                "₹${meal["price"]}",
+                                "₹${meal.price}",
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -146,15 +154,23 @@ class _MealsState extends State<Meals> {
 
                       // RIGHT CHECKBOX
                       Checkbox(
-                        value: selectedMeals.contains(mealId),
+                        value: selectedMealsids.contains(meal.id),
                         onChanged: (value) {
                           setState(() {
                             if (value == true) {
-                              selectedMeals.add(mealId);
+                              selectedMealsids.add(meal.id);
                             } else {
-                              selectedMeals.remove(mealId);
+                              selectedMealsids.remove(meal.id);
                             }
                           });
+
+                          selectedMeals.clear();
+                          for (var i = 0; i < Meals.length; i++) {
+                            if (selectedMealsids.contains(Meals[i].id)) {
+                              selectedMeals.add(Meals[i]);
+                            }
+                            setState(() {});
+                          }
                         },
                       ),
                     ],
@@ -170,28 +186,31 @@ class _MealsState extends State<Meals> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),
         child: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context, selectedMeals.toList());
+          onPressed: () async {
+            if (selectedMeals.isEmpty) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text("Please select at least one meal")));
+              return;
+            }
+
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text("Meal Saved Successfully!")));
+
+            Navigator.pop(context, selectedMeals);
           },
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
-          child: const Text(
-            "Submit",
-            style: TextStyle(fontSize: 18),
-          ),
+          child: const Text("Submit", style: TextStyle(fontSize: 18)),
         ),
       ),
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Addmeals()),
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (context) => Addmeals()));
         },
         child: const Icon(Icons.add),
       ),
